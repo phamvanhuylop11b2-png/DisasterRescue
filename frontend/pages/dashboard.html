@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng điều khiển | Hệ thống Cứu hộ Thiên tai</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/images/rescue-logo.svg">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-layout">
+
+  <!-- Top Navigation Bar -->
+  <nav class="admin-navbar">
+    <a href="dashboard.html" class="nav-brand">
+      <img src="../assets/images/rescue-logo.svg" alt="Rescue Logo" class="nav-logo">
+      <span class="nav-title">HỆ THỐNG CỨU HỘ THIÊN TAI</span>
+    </a>
+
+    <div class="nav-user-menu">
+      <div class="user-badge">
+        <span id="nav-user-name" class="user-name">Người dùng</span>
+        <span id="nav-user-role" class="user-role">Vai trò</span>
+      </div>
+      <button id="btn-logout" class="btn btn-secondary btn-logout">Đăng xuất</button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="admin-container">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Chào mừng trở lại, <span id="welcome-name">Người dùng</span>!</h1>
+        <p class="page-subtitle" id="welcome-role-desc">Bạn đang đăng nhập vào phân hệ chức năng tương ứng với vai trò của mình.</p>
+      </div>
+      <div id="admin-shortcut" style="display: none;">
+        <a href="admin-users.html" class="btn btn-primary">🛠️ Quản lý người dùng (Admin)</a>
+      </div>
+    </div>
+
+    <!-- Role Section Display -->
+    <section class="table-card" style="padding: 2rem; margin-bottom: 2rem;">
+      <div id="role-panel">
+        <!-- Injected via dashboard script -->
+      </div>
+    </section>
+
+    <!-- User Profile Details Card -->
+    <section class="table-card" style="padding: 2rem;">
+      <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;">Thông tin phiên làm việc hiện tại</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">MÃ TÀI KHOẢN (ID)</span>
+          <strong id="info-id">#</strong>
+        </div>
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">TÊN ĐĂNG NHẬP</span>
+          <strong id="info-username">-</strong>
+        </div>
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">EMAIL</span>
+          <strong id="info-email">-</strong>
+        </div>
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">VAI TRÒ HỆ THỐNG</span>
+          <span id="info-role" class="badge badge-active">-</span>
+        </div>
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">TRẠNG THÁI</span>
+          <strong id="info-status" style="color: var(--color-success);">HOẠT ĐỘNG</strong>
+        </div>
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">LẦN ĐĂNG NHẬP GẦN NHẤT</span>
+          <strong id="info-last-login">-</strong>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button id="theme-toggle-btn" class="theme-switch-btn" aria-label="Đổi giao diện sáng/tối">🌙</button>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Guard: must be authenticated
+      if (!AuthService.requireAuth()) return;
+
+      const user = AuthService.getCurrentUser();
+      if (!user) return;
+
+      document.getElementById('welcome-name').textContent = user.fullName || user.username;
+      document.getElementById('nav-user-name').textContent = user.fullName || user.username;
+      document.getElementById('nav-user-role').textContent = `${user.roleName || user.role} (${user.role})`;
+
+      document.getElementById('info-id').textContent = `#${user.id}`;
+      document.getElementById('info-username').textContent = `@${user.username}`;
+      document.getElementById('info-email').textContent = user.email;
+      document.getElementById('info-role').textContent = user.roleName || user.role;
+      document.getElementById('info-last-login').textContent = user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString('vi-VN') : 'Vừa xong';
+
+      if (user.role === 'ADMIN') {
+        document.getElementById('admin-shortcut').style.display = 'block';
+      }
+
+      document.getElementById('btn-logout').addEventListener('click', () => AuthService.logout());
+
+      // Role Panel Custom Content
+      const rolePanel = document.getElementById('role-panel');
+      if (user.role === 'ADMIN') {
+        rolePanel.innerHTML = `
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <div style="font-size:2.5rem;">🛡️</div>
+            <div>
+              <h2 style="font-size:1.3rem; font-weight:700; color:var(--color-primary);">BẢNG QUẢN TRỊ VIÊN HỆ THỐNG (/admin)</h2>
+              <p style="color:var(--text-muted); margin-top:0.25rem;">Bạn có quyền hạn cao nhất: quản trị tài khoản, cấp quyền, cấu hình hệ thống và giám sát toàn diện.</p>
+            </div>
+          </div>
+        `;
+      } else if (user.role === 'OPERATOR') {
+        rolePanel.innerHTML = `
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <div style="font-size:2.5rem;">📡</div>
+            <div>
+              <h2 style="font-size:1.3rem; font-weight:700; color:var(--color-secondary);">TRUNG TÂM ĐIỀU PHỐI CỨU HỘ, CỨU TRỢ (/dieu-phoi)</h2>
+              <p style="color:var(--text-muted); margin-top:0.25rem;">Tiếp nhận tin báo thiên tai, điều phối nhân lực và phương tiện ứng phó khẩn cấp.</p>
+            </div>
+          </div>
+        `;
+      } else if (user.role === 'RESCUER') {
+        rolePanel.innerHTML = `
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <div style="font-size:2.5rem;">🚑</div>
+            <div>
+              <h2 style="font-size:1.3rem; font-weight:700; color:var(--color-primary);">TRUNG TÂM TÁC CHIẾN CỨU HỘ HIỆN TRƯỜNG (/nhiem-vu)</h2>
+              <p style="color:var(--text-muted); margin-top:0.25rem;">Xem danh sách điểm cứu hộ được phân công, cập nhật trạng thái cứu nạn nhân và báo cáo hiện trường.</p>
+            </div>
+          </div>
+        `;
+      } else {
+        rolePanel.innerHTML = `
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <div style="font-size:2.5rem;">🆘</div>
+            <div>
+              <h2 style="font-size:1.3rem; font-weight:700; color:var(--color-primary);">CỔNG TIẾP NHẬN YÊU CẦU CỨU TRỢ KHẨN CẤP (/gui-yeu-cau)</h2>
+              <p style="color:var(--text-muted); margin-top:0.25rem;">Gửi vị trí và thông tin cần trợ giúp, theo dõi tình trạng đội cứu hộ đang tới.</p>
+            </div>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập | Hệ thống Cứu hộ Thiên tai</title>
+  <meta name="description" content="Cổng đăng nhập hệ thống quản lý và điều phối cứu hộ, cứu trợ thiên tai quốc gia.">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/rescue-logo.svg">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+<body class="auth-page">
+
+  <main class="auth-container">
+    <!-- Brand Header -->
+    <header class="auth-brand">
+      <div class="brand-logo-wrapper">
+        <img src="../assets/images/rescue-logo.svg" alt="Biểu tượng Cứu hộ Thiên tai" class="brand-logo">
+      </div>
+      <h1 class="brand-title">HỆ THỐNG CỨU HỘ THIÊN TAI</h1>
+      <p class="brand-subtitle">Quản lý và điều phối cứu hộ, cứu trợ</p>
+    </header>
+
+    <!-- Login Card -->
+    <section class="auth-card" aria-labelledby="login-title">
+      <div class="card-header">
+        <h2 id="login-title" class="card-title">Đăng nhập hệ thống</h2>
+        <p class="card-desc">Vui lòng nhập thông tin tài khoản của bạn.</p>
+      </div>
+
+      <!-- General Alert Area -->
+      <div id="login-alert" class="alert alert-danger" style="display: none;" role="alert" aria-live="polite">
+        <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span id="login-alert-text"></span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" novalidate>
+        <!-- Username or Email Field -->
+        <div class="form-group">
+          <label for="username-or-email" class="form-label">Tên đăng nhập hoặc email</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="username-or-email"
+              name="usernameOrEmail"
+              class="form-input"
+              placeholder="Nhập username hoặc email của bạn"
+              autocomplete="username"
+              required
+              aria-describedby="error-username-or-email"
+            >
+          </div>
+          <div id="error-username-or-email" class="field-error" role="alert"></div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password" class="form-label">Mật khẩu</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="Nhập mật khẩu"
+              autocomplete="current-password"
+              required
+              aria-describedby="error-password"
+            >
+            <button type="button" id="btn-toggle-password" class="btn-toggle-pass" aria-label="Hiện mật khẩu">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+          <div id="error-password" class="field-error" role="alert"></div>
+        </div>
+
+        <!-- Options: Remember Me & Forgot Password -->
+        <div class="form-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-me" name="rememberMe" class="checkbox-input">
+            <span>Ghi nhớ đăng nhập</span>
+          </label>
+          <a href="forgot-password.html" class="forgot-link">Quên mật khẩu?</a>
+        </div>
+
+        <!-- Submit Button with Loading State -->
+        <button type="submit" id="btn-login" class="btn btn-primary btn-submit">
+          <span id="btn-login-spinner" class="spinner" style="display: none;"></span>
+          <span id="btn-login-text">Đăng nhập</span>
+        </button>
+      </form>
+
+      <!-- System Notice -->
+      <div class="auth-notice">
+        <span class="notice-icon">ℹ️</span>
+        <span>Chỉ người dùng được cấp tài khoản mới có thể truy cập các chức năng quản lý.</span>
+      </div>
+    </section>
+
+    <!-- Footer Copyright -->
+    <footer class="auth-footer">
+      <p>&copy; 2026 Hệ thống Cứu hộ Thiên tai Quốc gia. Bảo lưu mọi quyền.</p>
+    </footer>
+  </main>
+
+  <!-- Theme Toggle Floating Button -->
+  <button id="theme-toggle-btn" class="theme-switch-btn" aria-label="Đổi giao diện sáng/tối">🌙</button>
+
+  <!-- JavaScript Modules -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/login.js"></script>
+</body>
+</html>
